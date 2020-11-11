@@ -3,7 +3,7 @@ Container Duck - Penetration Tool for Docker &amp; K8s Environment
 
 # functions
 
-collect
+search
 
 * local sensitive file
 * available linux commands
@@ -42,14 +42,18 @@ deploy
 * deploy K8s backdoor with K8s Cronjob
 * dump K8s Secrets
 
-nc(netcat)
+network tool(nc)
 
 * download
 * upload
 * reverse shell
 * bind shell
 
-kubectl
+editor(vi)
+
+* vi 
+
+K8s management(kubectl)
 
 * exec kubectl commands
 
