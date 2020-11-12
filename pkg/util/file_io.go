@@ -6,7 +6,10 @@ import (
 )
 
 func IsSoftLink(FilePath string) bool {
-	fileInfo, _ := os.Lstat(FilePath)
+	fileInfo, err := os.Lstat(FilePath)
+	if err != nil {
+		return false
+	}
 	if sys := fileInfo.Sys(); sys != nil {
 		if stat, ok := sys.(*syscall.Stat_t); ok {
 			nlink := uint64(stat.Nlink)

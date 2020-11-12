@@ -58,6 +58,7 @@ func ParseDocopt() {
 
 		fmt.Printf("\n[Information Gathering - Commands and Capabilities]\n")
 		evaluate.SearchAvailableCommands()
+		evaluate.GetProcCapabilities()
 
 		fmt.Printf("\n[Information Gathering - Mounts]\n")
 		evaluate.MountEscape()

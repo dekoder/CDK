@@ -20,8 +20,8 @@ cdk evaluate [--full]
 |功能|已支持|用例|
 |---|---|---|
 |os基础指纹|✔||
-|容器内可用于逃逸的capabilities|||
-|容器内部可用的linux命令|✔||
+|容器内可用的capabilities|✔||
+|容器内可用的linux命令|✔||
 |mount到容器中的目录|✔||
 |env中的敏感服务|✔||
 |进程中的敏感服务|✔||
@@ -32,17 +32,18 @@ run模块——执行指定的脚本（插件化维护poc/exp）
 
 ```
 cdk run --list
-cdk run <exploit-name> [options]
+cdk run <script-name> [options]
 ```
 
 |类别|功能|已支持|用例|
 |---|---|---|---|
 |逃逸|docker runc exploit|️||
 |逃逸|dirtycow exploit|||
-|逃逸|攻击docker.sock|||
-|逃逸|挂载目录写文件|||
+|逃逸|docker.sock逃逸|||
+|逃逸|挂载device逃逸|✔||
+|逃逸|挂载procfs逃逸|||
 |逃逸|进程注入|||
-|权限提升|本地K8s service account认证|||
+|横向移动|本地K8s service account证书利用|||
 |横向移动|K8s api-server鉴权不当|||
 |横向移动|etcd鉴权不当|||
 |信息窃取|本地代码AK扫描|✔||

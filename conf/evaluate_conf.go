@@ -30,6 +30,8 @@ var LinuxCommandChecklist = []string{
 	"svn",
 	"vi",
 	"capsh",
+	"mount",
+	"fdisk",
 }
 
 // match ENV to find useful service
@@ -58,8 +60,8 @@ var SensitiveFileConf = sensitiveFileRules{
 		`/.bashrc`,
 		`/.ssh/`,
 		`.token`,
-		`.docker`,
 		`/serviceaccount`,
+		`.dockerenv`,
+		`/config.json`,
 	},
 }
-

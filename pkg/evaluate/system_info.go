@@ -1,12 +1,10 @@
 package evaluate
 
 import (
-	"golang.org/x/sys/unix"
+	"github.com/shirou/gopsutil/host"
 	"log"
 	"os"
 	"os/user"
-	"runtime"
-	"strings"
 )
 
 func BasicSysInfo() {
@@ -24,10 +22,8 @@ func BasicSysInfo() {
 	}
 	log.Println("current user:", u.Username, "uid:", u.Uid, "gid:", u.Gid, "home:", u.HomeDir)
 
-	// system os and arch
-	log.Println("os:", runtime.GOOS, "arch:", runtime.GOARCH, "cpus:", runtime.NumCPU())
-
-	// kernel version
-	version, _ := unix.Sysctl("kern.osrelease")
-	log.Println("kernel version:", strings.ToLower(version))
+	// os/kernel version
+	kversion, _ := host.KernelVersion()
+	platform, family, osversion, _ := host.PlatformInformation()
+	log.Println(family, platform, osversion, "kernel:", kversion)
 }
