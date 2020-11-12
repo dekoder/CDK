@@ -1,4 +1,4 @@
-package search
+package evaluate
 
 import (
 	"golang.org/x/sys/unix"
@@ -10,7 +10,6 @@ import (
 )
 
 func BasicSysInfo() {
-
 	// current dir(pwd)
 	dir, err := os.Getwd()
 	if err != nil {

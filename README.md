@@ -11,10 +11,10 @@ Container Duck - Zero Dependency Docker/K8s Penetration Toolkit
 
 # 功能
 
-search模块——容器内部信息收集
+evaluate模块——容器内部弱点评估
 
 ```
-cdk search [--full]
+cdk evaluate [--full]
 ```
 
 |功能|已支持|用例|
@@ -52,6 +52,7 @@ cdk run <exploit-name> [options]
 |持久化|分发K8s后门Pod|||
 |持久化|部署shadow K8s api-server|||
 |持久化|部署K8s cronjob|||
+|痕迹清理|K8s audit-log清理|||
 
 工具命令——还原部分linux指令及常见的渗透工具
 
@@ -70,3 +71,9 @@ cdk ps
 |kubectl|轻量级K8s管理|||
 |probe|内网扫描|||
 |tunnel|隧道|||
+
+TODO
+
+1. loader
+2. 插件化
+3. EDR检测与躲避

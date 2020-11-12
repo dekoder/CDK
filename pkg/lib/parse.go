@@ -2,15 +2,16 @@ package lib
 
 import (
 	"fmt"
-	"github.com/Xyntax/CDK/pkg/exploit"
+	"github.com/Xyntax/CDK/pkg/evaluate"
 	"github.com/Xyntax/CDK/pkg/netcat"
 	"github.com/Xyntax/CDK/pkg/network"
 	"github.com/Xyntax/CDK/pkg/ps"
-	"github.com/Xyntax/CDK/pkg/search"
 	"github.com/Xyntax/CDK/pkg/ven"
 	"github.com/docopt/docopt-go"
 	"os"
 )
+
+var Args = ParseCmds()
 
 func ParseCmds() map[string]interface{} {
 	usage := `
@@ -19,8 +20,8 @@ Container Duck
 The zero-dependency docker/k8s exploit toolkit.
 
 Usage:
-  cdk search [--full]
-  cdk run (--list | <exploit> [options]) 
+  cdk evaluate [--full]
+  cdk run (--list | <exploit> [<args>...]) 
   cdk filescan <dir>
   cdk ps
   cdk ifconfig
@@ -44,44 +45,46 @@ func PassInnerArgs() {
 }
 
 func ParseDocopt() {
-	Args := ParseCmds()
 	fmt.Println(Args)
 
-	if Args["search"].(bool) {
+	if Args["evaluate"].(bool) {
 
 		fmt.Printf("\n[Information Gathering - System Info]\n")
-		search.BasicSysInfo()
+		evaluate.BasicSysInfo()
 
 		fmt.Printf("\n[Information Gathering - Services]\n")
-		search.SearchSensitiveEnv()
-		search.SearchSensitiveService()
+		evaluate.SearchSensitiveEnv()
+		evaluate.SearchSensitiveService()
 
 		fmt.Printf("\n[Information Gathering - Commands and Capabilities]\n")
-		search.SearchAvailableCommands()
+		evaluate.SearchAvailableCommands()
 
 		fmt.Printf("\n[Information Gathering - Mounts]\n")
-		search.MountEscape()
+		evaluate.MountEscape()
 
 		if Args["--full"].(bool) {
 			fmt.Printf("\n[Information Gathering - Sensitive Files]\n")
-			search.SearchLocalFilePath()
+			evaluate.SearchLocalFilePath()
 		}
 	}
 	if Args["run"].(bool) {
 		if Args["--list"].(bool) {
-			return
+			ListAllPlugin()
+			os.Exit(0)
 		}
-		if Args["run"].(bool) {
-			if Args["<exploit>"].(string) == "mount-escape" {
-				//exploit.MountEscape()
-			}
+		name := Args["<exploit>"].(string)
+		if Plugins[name] == nil {
+			fmt.Printf("\nInvalid script name: %s , available scripts:\n", name)
+			ListAllPlugin()
+			os.Exit(0)
 		}
+		RunSinglePlugin(name)
 	}
-	if Args["filescan"].(bool) {
-		StartDir := Args["<dir>"].(string)
-		fmt.Printf("\n[Scan Secrets from Dir: %s]\n", StartDir)
-		exploit.SearchLocalFileText(StartDir)
-	}
+	//if Args["filescan"].(bool) {
+	//	StartDir := Args["<dir>"].(string)
+	//	fmt.Printf("\n[Scan Secrets from Dir: %s]\n", StartDir)
+	//	exploit.SearchLocalFileText(StartDir)
+	//}
 }
 
 func ParseArgsMain() {
