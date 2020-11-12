@@ -1,62 +1,72 @@
 # CDK
-Container Duck - Penetration Tool for Docker &amp; K8s Environment
+Container Duck - Zero Dependency Docker/K8s Penetration Toolkit
 
-# functions
+# 介绍
+本工具适用于攻入容器环境后的横向移动场景，解决以下问题：
+  
+1. 生产环境的容器是缩减后的linux系统，往往没有常用的linux命令和python等脚本环境，传统渗透工具无法使用。本工具提供golang实现的原生渗透工具集。
+2. 集成docker/k8s场景特有的 逃逸、横向移动、持久化利用方式，插件化管理。
+  
+目前大部分功能仍在开发中，建议/反馈请提issue或mail: `i[at]cdxy.me`
 
-search
+# 功能
 
-* local sensitive file
-* available linux commands
-* available linux capabilities
-* network information
-* ssh keys
-* known hosts
-* docker.sock
-* K8s service account
-* K8s Pod infomation
-* K8s API server
-* cloud service AK/APIs
-* image registry
+search模块——容器内部信息收集
 
-attack/docker
+```
+cdk search [--full]
+```
 
-* runc exploit(CVE)
-* dirtycow exploit(CVE)
-* container escape with docker.sock abuse
-* container escape with mounted filepath
-* container escape with linux capabilities
+|功能|已支持|用例|
+|---|---|---|
+|os基础指纹|✔||
+|容器内可用于逃逸的capabilities|||
+|容器内部可用的linux命令|✔||
+|mount到容器中的目录|✔||
+|env中的敏感服务|✔||
+|进程中的敏感服务|✔||
+|本地敏感文件扫描|✔||
+|本地漏洞扫描|||
 
-attack/k8s
+run模块——执行指定的脚本（插件化维护poc/exp）
 
-* exploit privileged K8s service account
-* exploit unauthorized etcd
-* exploit unauthorized K8s api-server
-* exploit unauthorized K8s dashboard
+```
+cdk run --list
+cdk run <exploit-name> [options]
+```
 
-deploy
+|类别|功能|已支持|用例|
+|---|---|---|---|
+|逃逸|docker runc exploit|️||
+|逃逸|dirtycow exploit|||
+|逃逸|攻击docker.sock|||
+|逃逸|挂载目录写文件|||
+|逃逸|进程注入|||
+|权限提升|本地K8s service account认证|||
+|横向移动|K8s api-server鉴权不当|||
+|横向移动|etcd鉴权不当|||
+|信息窃取|本地代码AK扫描|✔||
+|信息窃取|K8s secrets dump|||
+|信息窃取|K8s config dump|||
+|持久化|webshell植入|||
+|持久化|分发K8s后门Pod|||
+|持久化|部署shadow K8s api-server|||
+|持久化|部署K8s cronjob|||
 
-* deploy backdoor pod
-* deploy ssh backdoor
-* deploy webserver backdoor
-* deploy K8s backdoor in MasterNode
-* deploy K8s backdoor with K8s Cronjob
-* dump K8s Secrets
+工具命令——还原部分linux指令及常见的渗透工具
 
-network tool(nc)
+```
+cdk nc [options]
+cdk ps
+```
 
-* download
-* upload
-* reverse shell
-* bind shell
-
-editor(vi)
-
-* vi 
-
-K8s management(kubectl)
-
-* exec kubectl commands
-
-probe
-
-* network IP/port scan
+|命令|功能|已支持|用例|
+|---|---|---|---|
+|nc|文件/shell通道|✔||
+|ps|进程信息|✔||
+|ifconfig|网络信息|✔||
+|vi|文件编辑|✔||
+|curl|HTTP发包|||
+|kubectl|轻量级K8s管理|||
+|probe|内网扫描|||
+|tunnel|隧道|||
