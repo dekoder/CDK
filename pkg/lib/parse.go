@@ -21,8 +21,7 @@ The zero-dependency docker/k8s exploit toolkit.
 
 Usage:
   cdk evaluate [--full]
-  cdk run (--list | <exploit> [<args>...]) 
-  cdk filescan <dir>
+  cdk run (--list | <exploit> [<args>...])
   cdk ps
   cdk ifconfig
   cdk nc [options]
@@ -81,11 +80,6 @@ func ParseDocopt() {
 		}
 		RunSinglePlugin(name)
 	}
-	//if Args["filescan"].(bool) {
-	//	StartDir := Args["<dir>"].(string)
-	//	fmt.Printf("\n[Scan Secrets from Dir: %s]\n", StartDir)
-	//	exploit.SearchLocalFileText(StartDir)
-	//}
 }
 
 func ParseArgsMain() {
