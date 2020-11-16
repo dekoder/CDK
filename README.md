@@ -35,26 +35,36 @@ cdk run --list
 cdk run <script-name> [options]
 ```
 
-|类别|功能|已支持|用例|
-|---|---|---|---|
-|逃逸|docker-runc CVE-2019-5736|||
-|逃逸|dirtycow CVE-2016-5159|||
-|逃逸|CVE-2017-7308|||
-|逃逸|docker.sock逃逸|||
-|逃逸|挂载device逃逸|✔||
-|逃逸|cgroups逃逸|✔||
-|逃逸|ptrace逃逸|||
-|横向移动|本地K8s service account证书利用|||
-|横向移动|K8s api-server本地未授权|||
-|横向移动|etcd本地未授权|||
-|信息窃取|代码库AK扫描|✔||
-|信息窃取|K8s secrets dump|||
-|信息窃取|K8s config dump|||
-|持久化|webshell植入|||
-|持久化|分发K8s后门Pod|||
-|持久化|部署shadow K8s api-server|||
-|持久化|部署K8s cronjob|||
-|痕迹清理|K8s audit-log清理|||
+|类别|功能|组件名|已支持|用例|
+|---|---|---|---|---|
+|逃逸|docker-runc CVE-2019-5736||||
+|逃逸|dirtycow CVE-2016-5159||||
+|逃逸|CVE-2017-7308||||
+|逃逸|docker.sock逃逸(DIND)||||
+|逃逸|device逃逸||✔||
+|逃逸|cgroups逃逸||✔||
+|逃逸|procfs逃逸||✔||
+|逃逸|ptrace逃逸||||
+|横向移动|本地K8s service account利用||||
+|横向移动|攻击K8s api-server||||
+|横向移动|K8s kubelet利用||||
+|横向移动|K8s dashboard利用||||
+|横向移动|K8s helm利用||||
+|横向移动|K8s etcd利用||||
+|横向移动|攻击私有镜像库||||
+|远程控制|反弹shell||✔||
+|信息窃取|代码库AK扫描||✔||
+|信息窃取|K8s secrets dump||||
+|信息窃取|K8s config dump||||
+|持久化|webshell植入||||
+|持久化|分发K8s后门Pod||||
+|持久化|部署shadow K8s api-server||||
+|持久化|部署K8s cronjob||||
+|持久化|AWS Lambda 后门||||
+|持久化|Azure Function 后门||||
+|持久化|Google Cloud Function 后门||||
+|痕迹清理|K8s audit-log清理||||
+
 
 工具命令——还原部分linux指令及常见的渗透工具
 

@@ -44,7 +44,7 @@ func PassInnerArgs() {
 }
 
 func ParseDocopt() {
-	fmt.Println(Args)
+	//fmt.Println(Args)
 
 	if Args["evaluate"].(bool) {
 

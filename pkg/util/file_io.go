@@ -1,6 +1,7 @@
 package util
 
 import (
+	"log"
 	"os"
 	"syscall"
 )
@@ -27,4 +28,16 @@ func IsDir(FilePath string) bool {
 		return false
 	}
 	return fileInfo.IsDir()
+}
+
+func RewriteFile(path string, content string, perm os.FileMode) {
+	cmdFile, err := os.OpenFile(path, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, perm)
+	if err != nil {
+		log.Fatal("overwrite file:", path, "err: "+err.Error())
+	} else {
+		n, _ := cmdFile.Seek(0, os.SEEK_END)
+		_, err = cmdFile.WriteAt([]byte(content), n)
+		log.Println("overwrite file:", path, "success.")
+		defer cmdFile.Close()
+	}
 }
