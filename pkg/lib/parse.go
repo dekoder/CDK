@@ -6,7 +6,7 @@ import (
 	"github.com/Xyntax/CDK/pkg/netcat"
 	"github.com/Xyntax/CDK/pkg/network"
 	"github.com/Xyntax/CDK/pkg/ps"
-	"github.com/Xyntax/CDK/pkg/ven"
+	"github.com/Xyntax/CDK/pkg/vi"
 	"github.com/docopt/docopt-go"
 	"os"
 )
@@ -90,7 +90,7 @@ func ParseArgsMain() {
 		netcat.RunVendorNetcat()
 	case "vi":
 		PassInnerArgs()
-		ven.RunVendorVen()
+		vi.RunVendorVi()
 	//case "kubectl":
 	//	PassInnerArgs()
 	//	kubectl.RunKubectl()

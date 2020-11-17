@@ -1,7 +1,7 @@
 package evaluate
 
 import (
-	"github.com/shirou/gopsutil/host"
+	"github.com/shirou/gopsutil/v3/host"
 	"log"
 	"os"
 	"os/user"

@@ -41,9 +41,9 @@ cdk run <script-name> [options]
 |逃逸|dirtycow CVE-2016-5159||||
 |逃逸|CVE-2017-7308||||
 |逃逸|docker.sock逃逸(DIND)||||
-|逃逸|device逃逸||✔||
-|逃逸|cgroups逃逸||✔||
-|逃逸|procfs逃逸||✔||
+|逃逸|device逃逸|mount-disk|✔||
+|逃逸|cgroups逃逸|mount-cgroup|✔||
+|逃逸|procfs逃逸|mount-procfs|✔||
 |逃逸|ptrace逃逸||||
 |横向移动|本地K8s service account利用||||
 |横向移动|攻击K8s api-server||||
@@ -52,8 +52,8 @@ cdk run <script-name> [options]
 |横向移动|K8s helm利用||||
 |横向移动|K8s etcd利用||||
 |横向移动|攻击私有镜像库||||
-|远程控制|反弹shell||✔||
-|信息窃取|代码库AK扫描||✔||
+|远程控制|反弹shell|reverse-shell|✔||
+|信息窃取|代码库AK扫描|ak-leakage|✔||
 |信息窃取|K8s secrets dump||||
 |信息窃取|K8s config dump||||
 |持久化|webshell植入||||
@@ -87,5 +87,4 @@ cdk ps
 TODO
 
 1. loader
-2. 插件化
-3. EDR检测与躲避
+2. EDR检测与躲避
