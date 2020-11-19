@@ -2,17 +2,19 @@ package ps
 
 import (
 	"fmt"
-	gops "github.com/mitchellh/go-ps"
+	"github.com/shirou/gopsutil/v3/process"
 	"log"
 )
 
 func RunPs() {
-	processList, err := gops.Processes()
+	ps, err := process.Processes()
 	if err != nil {
-		log.Fatal("ps.Processes() Failed, are you using windows?")
-		return
+		log.Fatal("get process list failed.")
 	}
-	for _, proc := range processList {
-		fmt.Printf("%d\t%d\t%s\n", proc.Pid(), proc.PPid(), proc.Executable())
+	for _, p := range ps {
+		pexe, _ := p.Exe()
+		ppid, _ := p.Ppid()
+		user, _ := p.Username()
+		fmt.Printf("%v\t%v\t%v\t%v\n", user, p.Pid, ppid, pexe)
 	}
 }

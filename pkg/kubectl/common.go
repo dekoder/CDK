@@ -1,0 +1,127 @@
+package kubectl
+
+import (
+	"fmt"
+	"github.com/idoubi/goz"
+	"io/ioutil"
+	"log"
+	"net"
+	"os"
+	"strings"
+)
+
+//https://github.com/kubernetes/client-go/blob/66db2540991da169fb60fce735064a55bfc52b71/rest/config.go#L483
+
+func ApiServerAddr() string {
+	host, port := os.Getenv("KUBERNETES_SERVICE_HOST"), os.Getenv("KUBERNETES_SERVICE_PORT")
+	if len(host) == 0 || len(port) == 0 {
+		log.Fatal("cannot find kubernetes api host in ENV")
+	}
+	return "https://" + net.JoinHostPort(host, port)
+}
+
+
+func GetServiceAccountToken() (string, error) {
+	const (
+		tokenFile  = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+		rootCAFile = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" // ignore root ca
+	)
+	token, err := ioutil.ReadFile(tokenFile)
+	if err != nil {
+		return "", err
+	}
+	return string(token), nil
+}
+
+/*
+curl -s https://192.168.0.234:6443/api/v1/nodes?watch  --header "Authorization: Bearer xxx" --cacert ca.crt
+*/
+//https://github.com/kubernetes/client-go/blob/66db2540991da169fb60fce735064a55bfc52b71/rest/config.go#L483
+func ServerAccountRequest(token string, method string, api string, args string) string {
+
+	cli := goz.NewClient()
+	switch strings.ToLower(method) {
+	case "get":
+		if len(token) > 0 {
+			resp, err := cli.Get(api, goz.Options{
+				Headers: map[string]interface{}{
+					"Authorization": "Bearer " + string(token),
+				},
+				//FormParams: map[string]interface{}{
+				//	"key1": "value1",
+				//	"key2": []string{"value21", "value22"},
+				//	"key3": "333",
+				//},
+			})
+			if err != nil {
+				log.Fatalln(err)
+			}
+			r, _ := resp.GetBody()
+			return r.String()
+		} else {
+			resp, err := cli.Get(api)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			r, _ := resp.GetBody()
+			return r.String()
+		}
+
+	case "post":
+		if len(token) > 0 {
+			resp, err := cli.Post(api, goz.Options{
+				Headers: map[string]interface{}{
+					"Authorization": "Bearer " + string(token),
+				},
+				//FormParams: map[string]interface{}{
+				//	"key1": "value1",
+				//	"key2": []string{"value21", "value22"},
+				//	"key3": "333",
+				//},
+			})
+			if err != nil {
+				log.Fatalln(err)
+			}
+			r, _ := resp.GetBody()
+			return r.String()
+		} else {
+			resp, err := cli.Post(api)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			r, _ := resp.GetBody()
+			return r.String()
+		}
+
+	default:
+		fatalWithUsage()
+	}
+	return ""
+}
+
+func fatalWithUsage() {
+	log.Println("invalid input args")
+	fmt.Printf("\nusage:\n\t./cdk kcurl get \"https://192.168.0.234:6443/api/v1/nodes?watch\"\n")
+	fmt.Printf("\t./cdk kcurl post \"https://192.168.0.234:6443/api/v1/nodes?watch\" --data=\"k1=v1&k2=v2\"\n")
+	log.Fatal()
+}
+
+func KubectlMain() {
+	method := os.Args[1]
+	url := os.Args[2]
+	token, err := GetServiceAccountToken()
+	if err != nil {
+		log.Fatal("reading service-account token faild, err:", err)
+	}
+
+	switch len(os.Args) {
+	case 4:
+		postArgs := os.Args[3]
+		fmt.Println(postArgs)
+		ServerAccountRequest(token, method, url, postArgs)
+	case 3:
+		ServerAccountRequest(token, method, url, "")
+	default:
+		fatalWithUsage()
+	}
+}

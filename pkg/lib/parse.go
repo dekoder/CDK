@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"github.com/Xyntax/CDK/pkg/evaluate"
+	"github.com/Xyntax/CDK/pkg/kubectl"
 	"github.com/Xyntax/CDK/pkg/netcat"
 	"github.com/Xyntax/CDK/pkg/network"
 	"github.com/Xyntax/CDK/pkg/ps"
@@ -15,9 +16,10 @@ var Args = ParseCmds()
 
 func ParseCmds() map[string]interface{} {
 	usage := `
-Container Duck
+Container DucK  
+zero-dependency docker/k8s exploit toolkit by <i@cdxy.me>
 
-The zero-dependency docker/k8s exploit toolkit.
+Find tutorial, configuration and use-case in https://github.com/Xyntax/CDK/wiki
 
 Usage:
   cdk evaluate [--full]
@@ -30,11 +32,18 @@ Usage:
   cdk -h | --help
   cdk -v | --version
 
+Examples:
+  cdk evaluate --full     							Run all information gathering scripts to find vulnerability inside container.
+  cdk run --list									List all available exploits of docker/k8s.
+  cdk run mount_cgroup "touch /tmp/exp_success"    	Automated escape privileged container then let target host run shell command.
+  cdk vi /root/abk    								Edit files in container like "vi" command.
+  cdk ps  											Show process information like "ps -ef" command.
+  
 Options:
-  -h --help     Show this screen.
+  -h --help     Show this help msg.
   -v --version  Show version.
 `
-	ver := "cdk v0.1.1"
+	ver := "cdk v0.1.3"
 	arguments, _ := docopt.ParseArgs(usage, os.Args[1:], ver)
 	return arguments
 }
@@ -61,6 +70,12 @@ func ParseDocopt() {
 
 		fmt.Printf("\n[Information Gathering - Mounts]\n")
 		evaluate.MountEscape()
+
+		fmt.Printf("\n[Information Gathering - K8s API Server]\n")
+		evaluate.CheckK8sAnonymousLogin()
+
+		fmt.Printf("\n[Information Gathering - K8s Service Account]\n")
+		evaluate.CheckK8sServiceAccount()
 
 		if Args["--full"].(bool) {
 			fmt.Printf("\n[Information Gathering - Sensitive Files]\n")
@@ -91,9 +106,9 @@ func ParseArgsMain() {
 	case "vi":
 		PassInnerArgs()
 		vi.RunVendorVi()
-	//case "kubectl":
-	//	PassInnerArgs()
-	//	kubectl.RunKubectl()
+	case "kubectl":
+		PassInnerArgs()
+		kubectl.KubectlMain()
 	case "ifconfig":
 		network.GetLocalAddresses()
 	// use docopt to parse CDK original args

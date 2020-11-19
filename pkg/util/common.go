@@ -1,6 +1,7 @@
 package util
 
 import (
+	"io/ioutil"
 	"math/rand"
 	"time"
 )
@@ -48,4 +49,20 @@ func RemoveDuplicateElement(addrs []string) []string {
 		}
 	}
 	return result
+}
+
+// dataFromSliceOrFile returns data from the slice (if non-empty), or from the file,
+// or an error if an error occurred reading the file
+func dataFromSliceOrFile(data []byte, file string) ([]byte, error) {
+	if len(data) > 0 {
+		return data, nil
+	}
+	if len(file) > 0 {
+		fileData, err := ioutil.ReadFile(file)
+		if err != nil {
+			return []byte{}, err
+		}
+		return fileData, nil
+	}
+	return nil, nil
 }

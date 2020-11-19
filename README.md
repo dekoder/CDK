@@ -26,6 +26,9 @@ cdk evaluate [--full]
 |信息收集|env中的敏感服务|✔||
 |信息收集|进程中的敏感服务|✔||
 |信息收集|本地敏感文件扫描|✔||
+|信息收集|K8s api-server信息|✔||
+|信息收集|K8s service-account信息|✔||
+|信息收集|本地敏感文件扫描|✔||
 |漏洞扫描|集成-版本比对|||
 
 run模块——执行指定的脚本（插件化维护poc/exp）
@@ -44,7 +47,7 @@ cdk run <script-name> [options]
 |逃逸|device逃逸|mount-disk|✔||
 |逃逸|cgroups逃逸|mount-cgroup|✔||
 |逃逸|procfs逃逸|mount-procfs|✔||
-|逃逸|ptrace逃逸||||
+|逃逸|ptrace逃逸检测|check-ptrace|✔||
 |横向移动|本地K8s service account利用||||
 |横向移动|攻击K8s api-server||||
 |横向移动|K8s kubelet利用||||
