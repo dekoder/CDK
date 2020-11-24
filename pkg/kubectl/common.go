@@ -10,8 +10,6 @@ import (
 	"strings"
 )
 
-//https://github.com/kubernetes/client-go/blob/66db2540991da169fb60fce735064a55bfc52b71/rest/config.go#L483
-
 func ApiServerAddr() string {
 	host, port := os.Getenv("KUBERNETES_SERVICE_HOST"), os.Getenv("KUBERNETES_SERVICE_PORT")
 	if len(host) == 0 || len(port) == 0 {
@@ -19,7 +17,6 @@ func ApiServerAddr() string {
 	}
 	return "https://" + net.JoinHostPort(host, port)
 }
-
 
 func GetServiceAccountToken() (string, error) {
 	const (

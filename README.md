@@ -43,7 +43,8 @@ cdk run <script-name> [options]
 |逃逸|docker-runc CVE-2019-5736||||
 |逃逸|dirtycow CVE-2016-5159||||
 |逃逸|CVE-2017-7308||||
-|逃逸|docker.sock逃逸(DIND)||||
+|逃逸|docker.sock PoC (DIND attack)|docker-sock-check|✔||
+|逃逸|docker.sock 部署后门镜像|docker-sock-deploy|||
 |逃逸|device逃逸|mount-disk|✔||
 |逃逸|cgroups逃逸|mount-cgroup|✔||
 |逃逸|procfs逃逸|mount-procfs|✔||

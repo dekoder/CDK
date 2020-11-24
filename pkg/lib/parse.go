@@ -7,12 +7,14 @@ import (
 	"github.com/Xyntax/CDK/pkg/netcat"
 	"github.com/Xyntax/CDK/pkg/network"
 	"github.com/Xyntax/CDK/pkg/ps"
+	"github.com/Xyntax/CDK/pkg/util"
 	"github.com/Xyntax/CDK/pkg/vi"
 	"github.com/docopt/docopt-go"
+	"log"
 	"os"
 )
 
-var Args = ParseCmds()
+var Args map[string]interface{} // global for scripts to parse inner args
 
 func ParseCmds() map[string]interface{} {
 	usage := `
@@ -28,7 +30,8 @@ Usage:
   cdk ifconfig
   cdk nc [options]
   cdk vi <file>
-  cdk kubectl [options]
+  cdk kcurl [options]
+  cdk ucurl [options]
   cdk -h | --help
   cdk -v | --version
 
@@ -53,6 +56,7 @@ func PassInnerArgs() {
 }
 
 func ParseDocopt() {
+	Args = ParseCmds()
 	//fmt.Println(Args)
 
 	if Args["evaluate"].(bool) {
@@ -106,9 +110,15 @@ func ParseArgsMain() {
 	case "vi":
 		PassInnerArgs()
 		vi.RunVendorVi()
-	case "kubectl":
+	case "kcurl":
 		PassInnerArgs()
 		kubectl.KubectlMain()
+	case "ucurl":
+		PassInnerArgs()
+		if len(os.Args) != 5 {
+			log.Fatal("invalid input args, Example: ./cdk ucurl get /var/run/docker.sock http://127.0.0.1/info \"\"")
+		}
+		util.UnixHttpSend(os.Args[1], os.Args[2], os.Args[3], os.Args[4]) // test
 	case "ifconfig":
 		network.GetLocalAddresses()
 	// use docopt to parse CDK original args

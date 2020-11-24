@@ -25,7 +25,6 @@ func RunSinglePlugin(name string) {
 	Plugins[name].Run()
 }
 
-//每个插件在初始化时必须注册
 func Register(name string, plugin PluginInterface) {
 	Plugins[name] = plugin
 }
