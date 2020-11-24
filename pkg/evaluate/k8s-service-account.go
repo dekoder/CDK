@@ -10,7 +10,11 @@ import (
 func CheckK8sServiceAccount() {
 
 	// get api-server connection conf in ENV
-	addr := kubectl.ApiServerAddr()
+	addr,err := kubectl.ApiServerAddr()
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// check if we can login service-account with /run/secrets/kubernetes.io/serviceaccount/token
 	log.Println("trying to login service-account with /run/secrets/kubernetes.io/serviceaccount/token")

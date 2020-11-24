@@ -10,7 +10,11 @@ import (
 func CheckK8sAnonymousLogin() {
 
 	// get api-server connection conf in ENV
-	addr := kubectl.ApiServerAddr()
+	addr,err := kubectl.ApiServerAddr()
+	if err != nil{
+		log.Println(err)
+		return
+	}
 	fmt.Println("\tFind K8s api-server in ENV:", addr)
 
 	// check if api-server allows system:anonymous request

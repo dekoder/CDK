@@ -1,6 +1,7 @@
 package kubectl
 
 import (
+	"errors"
 	"fmt"
 	"github.com/idoubi/goz"
 	"io/ioutil"
@@ -10,12 +11,13 @@ import (
 	"strings"
 )
 
-func ApiServerAddr() string {
+func ApiServerAddr() (string, error) {
 	host, port := os.Getenv("KUBERNETES_SERVICE_HOST"), os.Getenv("KUBERNETES_SERVICE_PORT")
 	if len(host) == 0 || len(port) == 0 {
-		log.Fatal("cannot find kubernetes api host in ENV")
+		text := "err: cannot find kubernetes api host in ENV"
+		return "", errors.New(text)
 	}
-	return "https://" + net.JoinHostPort(host, port)
+	return "https://" + net.JoinHostPort(host, port), nil
 }
 
 func GetServiceAccountToken() (string, error) {

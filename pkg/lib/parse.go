@@ -46,7 +46,7 @@ Options:
   -h --help     Show this help msg.
   -v --version  Show version.
 `
-	ver := "cdk v0.1.3"
+	ver := "cdk v0.1.4"
 	arguments, _ := docopt.ParseArgs(usage, os.Args[1:], ver)
 	return arguments
 }
