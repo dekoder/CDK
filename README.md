@@ -1,6 +1,6 @@
 # CDK - Zero Dependency Container Penetration Toolkit
 
-English | [简体中文](https://github.com/Xyntax/CDK/README_CN.md)
+English | [简体中文](https://github.com/Xyntax/CDK/wiki/CDK-Home-CN)
 
 ## Legal Disclaimer
 Usage of CDK for attacking targets without prior mutual consent is illegal.
