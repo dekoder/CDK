@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	lib.ParseArgsMain()
+	lib.ParseDocopt()
 }

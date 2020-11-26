@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"github.com/Xyntax/CDK/conf"
 	"github.com/Xyntax/CDK/pkg/evaluate"
 	"github.com/Xyntax/CDK/pkg/kubectl"
 	"github.com/Xyntax/CDK/pkg/netcat"
@@ -16,38 +17,40 @@ import (
 
 var Args map[string]interface{} // global for scripts to parse inner args
 
-func ParseCmds() map[string]interface{} {
-	usage := `
-Container DucK  
-zero-dependency docker/k8s exploit toolkit by <i@cdxy.me>
-
+var usage = `
+Container DucK
+Zero-dependency docker/k8s penetration toolkit by <i@cdxy.me>
 Find tutorial, configuration and use-case in https://github.com/Xyntax/CDK/wiki
 
 Usage:
   cdk evaluate [--full]
   cdk run (--list | <exploit> [<args>...])
-  cdk ps
-  cdk ifconfig
-  cdk nc [options]
-  cdk vi <file>
-  cdk kcurl [options]
-  cdk ucurl [options]
-  cdk -h | --help
-  cdk -v | --version
+  cdk <tool> [<args>...]
 
-Examples:
-  cdk evaluate --full     							Run all information gathering scripts to find vulnerability inside container.
-  cdk run --list									List all available exploits of docker/k8s.
-  cdk run mount_cgroup "touch /tmp/exp_success"    	Automated escape privileged container then let target host run shell command.
-  cdk vi /root/abk    								Edit files in container like "vi" command.
-  cdk ps  											Show process information like "ps -ef" command.
-  
+Evaluate:
+  cdk evaluate                              Gather information to find weekness inside container.
+  cdk evaluate --full                       Enable file scan during information gathering.
+
+Exploit:
+  cdk run --list                            List all available exploits.
+  cdk run <exploit> [<args>...]             Run single exploit, docs in https://github.com/Xyntax/CDK/wiki
+
+Tool:
+  vi <file>                                 Edit files in container like "vi" command.
+  ps                                        Show process information like "ps -ef" command.
+  nc [options]                              Create TCP tunnel.
+  ifconfig                                  Show network information.
+  kcurl	(get|post) <url> <data>             Make request to K8s api-server.
+  ucurl (get|post) <socket> <uri> <data>    Make request to docker unix socket.
+
 Options:
   -h --help     Show this help msg.
   -v --version  Show version.
 `
-	ver := "cdk v0.1.4"
-	arguments, _ := docopt.ParseArgs(usage, os.Args[1:], ver)
+var version = "cdk v0.1.4"
+
+func ParseCmds() map[string]interface{} {
+	arguments, _ := docopt.ParseArgs(usage, os.Args[1:], version)
 	return arguments
 }
 
@@ -56,8 +59,10 @@ func PassInnerArgs() {
 }
 
 func ParseDocopt() {
+	if len(os.Args) == 1 {
+		docopt.PrintHelpAndExit(nil, usage)
+	}
 	Args = ParseCmds()
-	//fmt.Println(Args)
 
 	if Args["evaluate"].(bool) {
 
@@ -79,13 +84,15 @@ func ParseDocopt() {
 		evaluate.CheckK8sAnonymousLogin()
 
 		fmt.Printf("\n[Information Gathering - K8s Service Account]\n")
-		evaluate.CheckK8sServiceAccount()
+		evaluate.CheckK8sServiceAccount(conf.K8sSATokenDefaultPath)
 
 		if Args["--full"].(bool) {
 			fmt.Printf("\n[Information Gathering - Sensitive Files]\n")
 			evaluate.SearchLocalFilePath()
 		}
+		return
 	}
+
 	if Args["run"].(bool) {
 		if Args["--list"].(bool) {
 			ListAllPlugin()
@@ -95,37 +102,36 @@ func ParseDocopt() {
 		if Plugins[name] == nil {
 			fmt.Printf("\nInvalid script name: %s , available scripts:\n", name)
 			ListAllPlugin()
-			os.Exit(0)
+			return
 		}
 		RunSinglePlugin(name)
+		return
 	}
-}
 
-func ParseArgsMain() {
-	// parse tools first
-	switch os.Args[1] {
-	case "nc":
-		PassInnerArgs()
-		netcat.RunVendorNetcat()
-	case "vi":
-		PassInnerArgs()
-		vi.RunVendorVi()
-	case "kcurl":
-		PassInnerArgs()
-		kubectl.KubectlMain()
-	case "ucurl":
-		PassInnerArgs()
-		if len(os.Args) != 5 {
-			log.Fatal("invalid input args, Example: ./cdk ucurl get /var/run/docker.sock http://127.0.0.1/info \"\"")
+	if Args["<tool>"] != nil {
+		switch Args["<tool>"] {
+		case "nc":
+			PassInnerArgs()
+			netcat.RunVendorNetcat()
+		case "vi":
+			PassInnerArgs()
+			vi.RunVendorVi()
+		case "kcurl":
+			PassInnerArgs()
+			kubectl.KubectlMain()
+		case "ucurl":
+			PassInnerArgs()
+			if len(os.Args) != 5 {
+				log.Fatal("invalid input args, Example: ./cdk ucurl get /var/run/docker.sock http://127.0.0.1/info \"\"")
+			}
+			util.UnixHttpSend(os.Args[1], os.Args[2], os.Args[3], os.Args[4]) // test
+		case "ifconfig":
+			network.GetLocalAddresses()
+		// use docopt to parse CDK original args
+		case "ps":
+			ps.RunPs()
+		default:
+			docopt.PrintHelpAndExit(nil, usage)
 		}
-		util.UnixHttpSend(os.Args[1], os.Args[2], os.Args[3], os.Args[4]) // test
-	case "ifconfig":
-		network.GetLocalAddresses()
-	// use docopt to parse CDK original args
-	case "ps":
-		ps.RunPs()
-	default:
-		ParseDocopt()
 	}
-
 }

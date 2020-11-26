@@ -7,13 +7,13 @@ import (
 	"strings"
 )
 
-func CheckK8sAnonymousLogin() {
+func CheckK8sAnonymousLogin() bool {
 
 	// get api-server connection conf in ENV
 	addr,err := kubectl.ApiServerAddr()
 	if err != nil{
 		log.Println(err)
-		return
+		return false
 	}
 	fmt.Println("\tFind K8s api-server in ENV:", addr)
 
@@ -29,12 +29,15 @@ func CheckK8sAnonymousLogin() {
 		if len(resp) > 0 && strings.Contains(resp, "kube-system") {
 			fmt.Println("\tsuccess, the system:anonymous role have a high authority.")
 			fmt.Println("\tnow you can make your own request to takeover the entire k8s cluster with `./cdk kcurl` command\n\tgood luck and have fun.")
+			return true
 		} else {
 			fmt.Println("\tfailed.")
 			fmt.Println("\tresponse:"+resp)
+			return true
 		}
 	} else {
 		fmt.Println("\tapi-server forbids anonymous request.")
 		fmt.Println("\tresponse:"+resp)
+		return false
 	}
 }

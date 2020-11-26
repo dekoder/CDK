@@ -3,6 +3,7 @@ package kubectl
 import (
 	"errors"
 	"fmt"
+	"github.com/Xyntax/CDK/conf"
 	"github.com/idoubi/goz"
 	"io/ioutil"
 	"log"
@@ -20,12 +21,8 @@ func ApiServerAddr() (string, error) {
 	return "https://" + net.JoinHostPort(host, port), nil
 }
 
-func GetServiceAccountToken() (string, error) {
-	const (
-		tokenFile  = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-		rootCAFile = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" // ignore root ca
-	)
-	token, err := ioutil.ReadFile(tokenFile)
+func GetServiceAccountToken(tokenPath string) (string, error) {
+	token, err := ioutil.ReadFile(tokenPath)
 	if err != nil {
 		return "", err
 	}
@@ -108,7 +105,7 @@ func fatalWithUsage() {
 func KubectlMain() {
 	method := os.Args[1]
 	url := os.Args[2]
-	token, err := GetServiceAccountToken()
+	token, err := GetServiceAccountToken(conf.K8sSATokenDefaultPath)
 	if err != nil {
 		log.Fatal("reading service-account token faild, err:", err)
 	}
