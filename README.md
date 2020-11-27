@@ -62,6 +62,7 @@ cdk run <script-name> [options]
 |Escaping|Cgroups Escaping|mount-cgroup|✔|[link](https://github.com/Xyntax/CDK/wiki/Exploit:-mount-cgroup)|
 |Escaping|Procfs Escaping|mount-procfs|✔|[link](https://github.com/Xyntax/CDK/wiki/Exploit:-mount-procfs)|
 |Escaping|Ptrace Escaping PoC|check-ptrace|✔|[link](https://github.com/Xyntax/CDK/wiki/Exploit:-check-ptrace)|
+|Discovery|K8s Component Probe|service-probe|✔||
 |Lateral Movement|K8s Service Account Control||||
 |Lateral Movement|Attack K8s api-server||||
 |Lateral Movement|Attack K8s Kubelet||||

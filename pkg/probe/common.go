@@ -1,8 +1,9 @@
-package nmap
+package probe
 
 import (
 	"fmt"
 	"github.com/Xyntax/CDK/conf"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -57,4 +58,19 @@ func GetTaskIPList(ip string) (base string, start, end int, err error) {
 	base = fmt.Sprintf("%s.%s.%s", tIp[0], tIp[1], tIp[2])
 	err = nil
 	return
+}
+
+func Ulimit() int64 {
+	out, err := exec.Command("ulimit", "-n").Output()
+	if err != nil {
+		panic(err)
+	}
+
+	s := strings.TrimSpace(string(out))
+
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	return i
 }

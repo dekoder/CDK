@@ -1,16 +1,15 @@
-package nmap
+package probe
 
 import (
 	"context"
 	"fmt"
 	"github.com/Xyntax/CDK/conf"
+	"golang.org/x/sync/semaphore"
 	"log"
 	"net"
 	"strings"
 	"sync"
 	"time"
-
-	"golang.org/x/sync/semaphore"
 )
 
 type PortScanner struct {
@@ -18,23 +17,7 @@ type PortScanner struct {
 	lock    *semaphore.Weighted
 }
 
-//func Ulimit() int64 {
-//	out, err := exec.Command("ulimit", "-n").Output()
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	s := strings.TrimSpace(string(out))
-//
-//	i, err := strconv.ParseInt(s, 10, 64)
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	return i
-//}
-
-func ScanPort(ip string, port int, timeout time.Duration) {
+func ScanPort(ip string, port int, timeout time.Duration) bool {
 	target := fmt.Sprintf("%s:%d", ip, port)
 	conn, err := net.DialTimeout("tcp", target, timeout)
 
@@ -42,14 +25,12 @@ func ScanPort(ip string, port int, timeout time.Duration) {
 		if strings.Contains(err.Error(), "too many open files") {
 			time.Sleep(timeout)
 			ScanPort(ip, port, timeout)
-		} else {
-			fmt.Println(port, "closed")
 		}
-		return
+		return false
 	}
 
-	conn.Close()
-	fmt.Println(port, "open")
+	_ = conn.Close()
+	return true
 }
 
 func (ps *PortScanner) Start() {
@@ -75,18 +56,27 @@ func (ps *PortScanner) Start() {
 				go func(port int) {
 					defer ps.lock.Release(1)
 					defer wg.Done()
-					fmt.Println(ip,port,p.Desc,conf.TCPScannerConf.Timeout)
-					ScanPort(ip, port, conf.TCPScannerConf.Timeout)
+					if ScanPort(ip, port, conf.TCPScannerConf.Timeout) {
+						fmt.Printf("open %s: %s:%d\n", p.Desc, ip, port)
+					}
 				}(port)
 			}
 		}
 	}
 }
 
+func TCPScanExploitAPI(ipRange string) {
+	ps := &PortScanner{
+		ipRange: ipRange,
+		lock:    semaphore.NewWeighted(conf.TCPScannerConf.MaxParallel),
+	}
+	ps.Start()
+}
+
 func TCPScanToolAPI(ipRange string) {
 	ps := &PortScanner{
-		ipRange:   ipRange,
-		lock: semaphore.NewWeighted(conf.TCPScannerConf.MaxParallel),
+		ipRange: ipRange,
+		lock:    semaphore.NewWeighted(conf.TCPScannerConf.MaxParallel),
 	}
 	ps.Start()
 }
