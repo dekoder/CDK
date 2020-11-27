@@ -7,6 +7,7 @@ import (
 	"github.com/Xyntax/CDK/pkg/kubectl"
 	"github.com/Xyntax/CDK/pkg/netcat"
 	"github.com/Xyntax/CDK/pkg/network"
+	"github.com/Xyntax/CDK/pkg/nmap"
 	"github.com/Xyntax/CDK/pkg/ps"
 	"github.com/Xyntax/CDK/pkg/util"
 	"github.com/Xyntax/CDK/pkg/vi"
@@ -130,6 +131,13 @@ func ParseDocopt() {
 		// use docopt to parse CDK original args
 		case "ps":
 			ps.RunPs()
+		case "probe":
+			args := Args["<args>"].([]string)
+			if len(args) != 1 {
+				log.Println("Invalid input args.")
+				log.Fatal("usage: cdk probe 192.168.1.0-255")
+			}
+			nmap.TCPScanToolAPI(args[0])
 		default:
 			docopt.PrintHelpAndExit(nil, usage)
 		}

@@ -94,11 +94,11 @@ cdk ps
 |ps|Process Information|✔||
 |ifconfig|Network Information|✔||
 |vi|Edit Files|✔||
-|kcurl|Request to K8s api-server|||
+|kcurl|Request to K8s api-server|✔||
 |dcurl|Request to Docker HTTP API|||
-|ucurl|Request to Docker Unix Socket|||
+|ucurl|Request to Docker Unix Socket|✔||
 |rcurl|Request to Docker Registry API|||
-|probe|IP/Port Scanning|||
+|probe|IP/Port Scanning|✔||
 
 ## Installation
 Drop executable files into target container and start testing.
